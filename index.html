@@ -1,0 +1,1299 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotky2010 Incremental — Endgame: 10^^10^10000 Points</title>
+
+  <!-- Google Font: Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Break Eternity JS for arbitrary hyper-exponential & tetrational numbers up to 10^^10^10000 -->
+  <script src="https://cdn.jsdelivr.net/npm/break_eternity.js@2.1.1/dist/break_eternity.min.js"></script>
+
+  <style>
+    * {
+      font-family: 'Montserrat', sans-serif !important;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 18% 15%, #1e1b4b 0%, #0f172a 42%, #070b19 100%);
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* Animated starfield + subtle cosmic circuit grid inspired by Spotky2010 banner */
+    .cosmic-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(1.5px 1.5px at 12% 18%, rgba(56, 189, 248, 0.85), transparent),
+        radial-gradient(2px 2px at 28% 72%, rgba(192, 132, 252, 0.8), transparent),
+        radial-gradient(1.5px 1.5px at 46% 24%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(2px 2px at 64% 81%, rgba(34, 211, 238, 0.75), transparent),
+        radial-gradient(1.5px 1.5px at 82% 14%, rgba(232, 121, 249, 0.85), transparent),
+        radial-gradient(1.5px 1.5px at 91% 52%, rgba(255, 255, 255, 0.7), transparent),
+        linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(168, 85, 247, 0.08) 50%, rgba(15, 23, 42, 0.2) 100%);
+    }
+
+    .circuit-lines {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 220px;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.28;
+    }
+
+    .glass-panel {
+      background: rgba(13, 20, 42, 0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.65), inset 0 0 20px rgba(139, 92, 246, 0.08);
+    }
+
+    .neon-cyan-glow {
+      text-shadow: 0 0 16px rgba(34, 211, 238, 0.65), 0 0 32px rgba(56, 189, 248, 0.35);
+    }
+
+    .neon-purple-glow {
+      text-shadow: 0 0 16px rgba(192, 132, 252, 0.7), 0 0 32px rgba(168, 85, 247, 0.4);
+    }
+
+    /* Upgrade Cards */
+    .upg-card {
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+      background: linear-gradient(145deg, rgba(20, 29, 61, 0.9), rgba(12, 18, 38, 0.95));
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .upg-card.affordable {
+      border-color: rgba(34, 211, 238, 0.75);
+      box-shadow: 0 0 18px rgba(34, 211, 238, 0.22);
+      cursor: pointer;
+    }
+
+    .upg-card.affordable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(34, 211, 238, 0.38);
+      border-color: #22d3ee;
+    }
+
+    .upg-card.bought {
+      background: linear-gradient(145deg, rgba(16, 65, 82, 0.85), rgba(49, 24, 89, 0.85));
+      border-color: rgba(192, 132, 252, 0.8);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+    }
+
+    .upg-card.locked {
+      opacity: 0.62;
+      cursor: not-allowed;
+    }
+
+    /* Buyable Cards */
+    .buyable-card {
+      background: linear-gradient(160deg, rgba(22, 31, 66, 0.92), rgba(15, 22, 46, 0.96));
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .buyable-card:hover {
+      border-color: rgba(56, 189, 248, 0.65);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.18);
+    }
+
+    /* Primary Gradient Buttons */
+    .btn-spotky {
+      background: linear-gradient(135deg, #06b6d4 0%, #6366f1 50%, #a855f7 100%);
+      transition: all 0.16s ease;
+      box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-spotky:hover:not(:disabled) {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(34, 211, 238, 0.55);
+    }
+
+    .btn-spotky:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn-spotky:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      filter: grayscale(0.4);
+    }
+
+    .btn-inflate {
+      background: linear-gradient(135deg, #d946ef 0%, #8b5cf6 50%, #3b82f6 100%);
+      box-shadow: 0 4px 20px rgba(217, 70, 239, 0.38);
+      transition: all 0.16s ease;
+    }
+
+    .btn-inflate:hover:not(:disabled) {
+      filter: brightness(1.14);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(217, 70, 239, 0.6);
+    }
+
+    .btn-inflate:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090e1f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #06b6d4, #a855f7);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-slate-950">
+
+  <!-- Cosmic Background & SVG Mountain/Circuit Horizon -->
+  <div class="cosmic-bg"></div>
+  <svg class="circuit-lines" viewBox="0 0 1440 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="mountainGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.55" />
+        <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.55" />
+        <stop offset="100%" stop-color="#ec4899" stop-opacity="0.55" />
+      </linearGradient>
+    </defs>
+    <polygon points="0,220 0,130 140,65 290,155 460,80 650,175 840,70 1030,150 1230,55 1440,140 1440,220" fill="url(#mountainGrad)" />
+    <polyline points="0,165 140,100 290,180 460,115 650,195 840,105 1030,175 1230,90 1440,165" fill="none" stroke="#22d3ee" stroke-width="2" />
+    <circle cx="140" cy="100" r="4" fill="#22d3ee" />
+    <circle cx="460" cy="115" r="4" fill="#c084fc" />
+    <circle cx="840" cy="105" r="4" fill="#22d3ee" />
+    <circle cx="1230" cy="90" r="4" fill="#f472b6" />
+  </svg>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Endgame Celebration Modal -->
+  <div id="endgame-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/85 backdrop-blur-md p-4">
+    <div class="glass-panel max-w-lg w-full rounded-3xl p-6 sm:p-8 text-center border-2 border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.45)]">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 mb-4 shadow-lg">
+        <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-black tracking-tight bg-gradient-to-r from-cyan-300 via-white to-purple-300 bg-clip-text text-transparent mb-2">
+        ENDGAME REACHED!
+      </h2>
+      <p class="text-sm sm:text-base text-slate-300 font-medium mb-4">
+        Congratulations! You have surpassed <span class="text-cyan-300 font-extrabold">10^^10^10000 Points</span> and conquered <span class="text-purple-300 font-bold">Spotky2010 Incremental</span>!
+      </p>
+      <div class="bg-slate-900/80 rounded-2xl p-4 mb-6 border border-purple-500/30 text-xs sm:text-sm text-slate-300 space-y-1">
+        <div>Time Played: <span id="endgame-time" class="text-cyan-300 font-bold">0s</span></div>
+        <div>Total Inflation Resets: <span id="endgame-inflations" class="text-fuchsia-300 font-bold">0</span></div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <button onclick="closeEndgameModal()" class="btn-spotky px-6 py-3 rounded-xl font-bold text-white text-sm cursor-pointer">
+          Keep Playing Beyond Endgame
+        </button>
+        <button onclick="promptHardReset()" class="px-5 py-3 rounded-xl font-bold text-rose-300 bg-rose-950/60 border border-rose-500/40 hover:bg-rose-900/60 text-sm cursor-pointer transition">
+          New Run (Reset)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save / Import Modal -->
+  <div id="save-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+    <div class="glass-panel max-w-lg w-full rounded-3xl p-6 border border-cyan-400/50">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-extrabold text-cyan-300">Export / Import Save Data</h3>
+        <button onclick="closeSaveModal()" class="text-slate-400 hover:text-white font-bold text-lg px-2 cursor-pointer">&times;</button>
+      </div>
+      <p class="text-xs text-slate-300 mb-3">
+        Copy your save string below to back up your progress, or paste an existing save string and click <strong>Import Save</strong>.
+      </p>
+      <textarea id="save-textarea" rows="5" class="w-full rounded-xl bg-slate-950/90 border border-slate-700 p-3 text-xs text-cyan-200 focus:outline-none focus:border-cyan-400 mb-4" placeholder="Paste your Spotky2010 Incremental save string here..."></textarea>
+      <div class="flex flex-wrap gap-2 justify-end">
+        <button onclick="copyExportSave()" class="px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-400/50 text-cyan-200 hover:bg-cyan-500/30 font-bold text-xs cursor-pointer transition">
+          Copy to Clipboard
+        </button>
+        <button onclick="importSaveFromModal()" class="btn-spotky px-4 py-2 rounded-xl text-white font-bold text-xs cursor-pointer">
+          Import Save
+        </button>
+        <button onclick="closeSaveModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 font-bold text-xs cursor-pointer transition">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hard Reset Confirmation Modal (No native confirm()) -->
+  <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+    <div class="glass-panel max-w-md w-full rounded-3xl p-6 border border-rose-500/50 text-center">
+      <h3 class="text-xl font-extrabold text-rose-400 mb-2">Hard Reset Game?</h3>
+      <p class="text-xs sm:text-sm text-slate-300 mb-5">
+        This will permanently erase your Points, 20 Upgrades, 5 Buyables, and Inflation Points. Are you sure?
+      </p>
+      <div class="flex gap-3 justify-center">
+        <button onclick="executeHardReset()" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs sm:text-sm cursor-pointer transition">
+          Yes, Wipe Save
+        </button>
+        <button onclick="closeResetModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs sm:text-sm cursor-pointer transition">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Wrapper -->
+  <div class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-7 space-y-6">
+
+    <!-- Spotky2010 Branded Header -->
+    <header class="glass-panel rounded-3xl p-5 sm:p-6 relative overflow-hidden">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <!-- Custom Controller + Shield SVG Badge matching Spotky2010 Wallpaper -->
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-cyan-400 via-indigo-500 to-fuchsia-600 p-[2px] shrink-0 shadow-[0_0_25px_rgba(56,189,248,0.45)]">
+            <div class="w-full h-full bg-slate-950/90 rounded-2xl flex items-center justify-center">
+              <svg class="w-9 h-9 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="6" width="20" height="12" rx="5" class="stroke-cyan-400" />
+                <path d="M6 12h4M8 10v4" class="stroke-white" stroke-linecap="round" />
+                <circle cx="15.5" cy="10.5" r="1" fill="#e879f9" stroke="none" />
+                <circle cx="17.5" cy="13" r="1" fill="#22d3ee" stroke="none" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                Spotky2010 <span class="bg-gradient-to-r from-cyan-300 to-fuchsia-400 bg-clip-text text-transparent">Incremental</span>
+              </h1>
+              <span class="px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+                Endgame: 10^^10^10000
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 font-medium mt-1">
+              Gaming enthusiast <span class="text-cyan-400 mx-1">|</span> Content Creator <span class="text-purple-400 mx-1">|</span> Leveling up since 2010
+            </p>
+          </div>
+        </div>
+
+        <!-- Utility Controls -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="manualSave()" class="px-3.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-cyan-500/30 text-cyan-200 font-bold text-xs cursor-pointer transition">
+            Save Game
+          </button>
+          <button onclick="openSaveModal()" class="px-3.5 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-purple-500/30 text-purple-200 font-bold text-xs cursor-pointer transition">
+            Export / Import
+          </button>
+          <button onclick="toggleAutoBuy()" id="autobuy-btn" class="hidden px-3.5 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-200 font-bold text-xs cursor-pointer transition">
+            Auto-Buyables: ON
+          </button>
+          <button onclick="promptHardReset()" class="px-3.5 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/70 border border-rose-500/30 text-rose-300 font-bold text-xs cursor-pointer transition">
+            Hard Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Endgame Progress Bar -->
+      <div class="mt-5 pt-4 border-t border-slate-700/60">
+        <div class="flex flex-wrap justify-between items-center text-xs font-bold mb-1.5 gap-2">
+          <span class="text-slate-300">Progress to Endgame (<span class="text-cyan-300">10^^10^10000</span> Points)</span>
+          <span id="endgame-percent" class="text-cyan-300">0.00%</span>
+        </div>
+        <div class="w-full h-3 bg-slate-950/90 rounded-full overflow-hidden border border-slate-700/80 p-0.5">
+          <div id="endgame-bar" class="h-full rounded-full bg-gradient-to-r from-cyan-400 via-indigo-500 to-fuchsia-500 transition-all duration-150" style="width: 0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Dashboard: Points Core + Inflation Points Prestige Layer -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+      <!-- Points Display & Manual Clicker (7 cols) -->
+      <section class="lg:col-span-7 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Primary Currency</span>
+            <span id="hyper-tier-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/25 text-indigo-200 border border-indigo-400/30">
+              Tier 1: Linear & Exponential
+            </span>
+          </div>
+
+          <div class="my-3">
+            <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-white neon-cyan-glow break-all leading-tight">
+              <span id="points-display">0</span> <span class="text-lg sm:text-2xl font-bold text-cyan-300">Points</span>
+            </div>
+            <div class="text-sm sm:text-base font-bold text-slate-300 mt-2">
+              Generating <span id="pps-display" class="text-cyan-300 font-extrabold">1.00</span> Points/sec
+            </div>
+          </div>
+
+          <!-- Active Multipliers Summary -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 my-4">
+            <div class="bg-slate-950/75 rounded-2xl p-3 border border-slate-800">
+              <div class="text-[11px] font-semibold text-slate-400">Upgrade Mult</div>
+              <div id="stat-upg-mult" class="text-sm font-extrabold text-cyan-300 truncate">1.00x</div>
+            </div>
+            <div class="bg-slate-950/75 rounded-2xl p-3 border border-slate-800">
+              <div class="text-[11px] font-semibold text-slate-400">Buyable Power</div>
+              <div id="stat-buy-mult" class="text-sm font-extrabold text-indigo-300 truncate">1.00x</div>
+            </div>
+            <div class="bg-slate-950/75 rounded-2xl p-3 border border-slate-800 col-span-2 sm:col-span-1">
+              <div class="text-[11px] font-semibold text-slate-400">Hyper / Tetration</div>
+              <div id="stat-hyper-mult" class="text-sm font-extrabold text-fuchsia-300 truncate">^1.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button onclick="clickGenerate()" class="btn-spotky flex-1 py-3.5 px-5 rounded-2xl font-extrabold text-white text-sm sm:text-base cursor-pointer flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span>Generate +<span id="click-gain-display">1.00</span> Points</span>
+          </button>
+          <button onclick="buyMaxAllBuyables()" class="px-5 py-3.5 rounded-2xl bg-slate-800/95 hover:bg-slate-700 border border-cyan-400/40 text-cyan-200 font-extrabold text-xs sm:text-sm cursor-pointer transition">
+            Buy Max Buyables (M)
+          </button>
+        </div>
+      </section>
+
+      <!-- Inflation Points Layer (5 cols) -->
+      <section class="lg:col-span-5 glass-panel rounded-3xl p-5 sm:p-6 border border-fuchsia-500/35 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-fuchsia-400">Inflation Layer</span>
+            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-200 border border-fuchsia-400/30">
+              Prestige Currency
+            </span>
+          </div>
+
+          <div class="my-3">
+            <div class="text-2xl sm:text-3xl lg:text-4xl font-black text-white neon-purple-glow break-all leading-tight">
+              <span id="ip-display">0</span> <span class="text-base sm:text-xl font-bold text-fuchsia-300">Inflation Points</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 font-semibold mt-2">
+              Boosting Point gain by <span id="ip-boost-display" class="text-fuchsia-300 font-extrabold">1.00x</span>
+              <span id="ip-passive-tag" class="hidden ml-1.5 text-[11px] text-emerald-300 font-bold">(+100% IP/sec)</span>
+            </p>
+          </div>
+
+          <div class="bg-slate-950/75 rounded-2xl p-3 border border-fuchsia-500/25 text-xs text-slate-300 mb-4">
+            <div class="flex justify-between items-center">
+              <span>Unlock Requirement:</span>
+              <span class="font-bold text-cyan-300">1.00e6 Points</span>
+            </div>
+            <div class="flex justify-between items-center mt-1">
+              <span>Next Inflation Point at:</span>
+              <span id="next-ip-req" class="font-bold text-fuchsia-300">1.00e6 Points</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="inflate-btn" onclick="doInflationReset()" disabled class="btn-inflate w-full py-3.5 px-4 rounded-2xl font-extrabold text-white text-sm cursor-pointer">
+          Reach 1.00e6 Points to Inflate
+        </button>
+      </section>
+    </div>
+
+    <!-- 5 Repeatable Buyables Section -->
+    <section class="glass-panel rounded-3xl p-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block shadow-[0_0_10px_#22d3ee]"></span>
+            Cosmic Buyables <span class="text-xs font-bold text-cyan-300 bg-cyan-500/15 px-2.5 py-0.5 rounded-full border border-cyan-400/30">5 Repeatable</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Repeatable generators that compound exponentially and feed into tetrational inflation.</p>
+        </div>
+        <button onclick="buyMaxAllBuyables()" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 font-bold text-xs cursor-pointer transition">
+          Max All Buyables
+        </button>
+      </div>
+
+      <div id="buyables-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- 20 Upgrades Section -->
+    <section class="glass-panel rounded-3xl p-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400 inline-block shadow-[0_0_10px_#e879f9]"></span>
+            Spotky2010 Upgrades <span id="upgrades-count-badge" class="text-xs font-bold text-fuchsia-300 bg-fuchsia-500/15 px-2.5 py-0.5 rounded-full border border-fuchsia-400/30">0 / 20 Purchased</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">20 milestone upgrades that accelerate you from single digits to <strong class="text-cyan-300">10^^10^10000</strong> Points.</p>
+        </div>
+        <button onclick="buyAllAffordableUpgrades()" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-fuchsia-500/20 hover:bg-fuchsia-500/30 border border-fuchsia-400/50 text-fuchsia-200 font-bold text-xs cursor-pointer transition">
+          Buy Affordable Upgrades (U)
+        </button>
+      </div>
+
+      <div id="upgrades-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-400 pb-4">
+      Spotky2010 Incremental • Built with <span class="text-cyan-400 font-semibold">break_eternity.js</span> &amp; <span class="text-purple-400 font-semibold">Montserrat</span> • Endgame Goal: <span class="text-white font-bold">10^^10^10000 Points</span>
+    </footer>
+  </div>
+
+  <script>
+    /*************************************************************************
+     * SPOTKY2010 INCREMENTAL - CORE ENGINE (break_eternity.js)
+     * Endgame: 10^^10^10000 Points (Decimal.tetrate(10, Decimal.pow(10, 10000)))
+     *************************************************************************/
+
+    const D = (val) => new Decimal(val);
+
+    // Endgame target: 10^^(10^10000)
+    const ENDGAME_HEIGHT = D(10).pow(10000); // 1e10000
+    const ENDGAME_POINTS = D(10).tetrate(ENDGAME_HEIGHT); // 10^^10^10000
+    const INFLATION_REQ = D(1e6);
+
+    // Game State
+    let state = {
+      points: D(0),
+      totalPoints: D(0),
+      inflationPoints: D(0),
+      inflationResets: 0,
+      upgrades: Array(20).fill(false),
+      buyables: [D(0), D(0), D(0), D(0), D(0)],
+      autoBuyables: true,
+      endgameReached: false,
+      playTime: 0,
+      lastTick: Date.now()
+    };
+
+    /*************************************************************************
+     * NUMBER FORMATTING (Supports up to 10^^10^10000 clearly)
+     *************************************************************************/
+    function formatNum(val, decimals = 2) {
+      const d = D(val);
+      if (d.isNan()) return "NaN";
+      if (!d.isFinite()) return "Infinity";
+      if (d.lt(0)) return "-" + formatNum(d.neg(), decimals);
+      if (d.eq(0)) return "0";
+
+      // Standard formatting below 1,000,000
+      if (d.lt(1e6)) {
+        if (d.lt(1000)) {
+          return d.toNumber().toFixed(decimals);
+        }
+        return Math.floor(d.toNumber()).toLocaleString("en-US");
+      }
+
+      // Scientific notation: 1.23e45 up to e1,000,000
+      if (d.layer === 0 || (d.layer === 1 && d.mag < 1e6)) {
+        const exp = Math.floor(d.log10());
+        const mantissa = d.div(D(10).pow(exp)).toNumber();
+        if (exp < 1e6) {
+          return `${mantissa.toFixed(decimals)}e${exp.toLocaleString("en-US")}`;
+        }
+      }
+
+      // Multi-exponent towers: ee123.45 or eee12.34 for layers 2..4
+      if (d.layer >= 1 && d.layer <= 4) {
+        const ePrefix = "e".repeat(d.layer);
+        const topMag = d.mag;
+        if (topMag < 1e6) {
+          return `${ePrefix}${topMag.toFixed(decimals)}`;
+        } else {
+          const topExp = Math.floor(Math.log10(topMag));
+          const topMant = topMag / Math.pow(10, topExp);
+          return `${ePrefix}${topMant.toFixed(2)}e${topExp.toLocaleString("en-US")}`;
+        }
+      }
+
+      // Tetration / Hyper-log notation (10^^height) for layer >= 5
+      // break_eternity layer represents number of 10^ applications above mag
+      const slogVal = d.slog(10);
+      if (slogVal.lt(1e6)) {
+        return `10^^${slogVal.toNumber().toFixed(2)}`;
+      } else {
+        // Above 10^^1e6, express height in scientific notation, e.g., 10^^10^10000!
+        const heightExp = slogVal.log10();
+        if (heightExp.lt(1e6)) {
+          return `10^^10^${heightExp.toNumber().toFixed(2)}`;
+        }
+        return `10^^(${formatNum(slogVal, 2)})`;
+      }
+    }
+
+    /*************************************************************************
+     * 5 REPEATABLE BUYABLES DEFINITION
+     *************************************************************************/
+    const BUYABLES_DATA = [
+      {
+        id: 0,
+        name: "B1: Pixel Spark",
+        desc: "Multiplies base Point generation.",
+        baseCost: D(10),
+        costScale: D(1.45),
+        getEffect: (lvl) => {
+          let base = D(2);
+          if (state.upgrades[1]) base = base.mul(1.5);
+          if (state.upgrades[7]) base = base.pow(2);
+          if (state.upgrades[13]) base = base.pow(5);
+          return base.pow(lvl);
+        },
+        formatEffect: (eff) => `${formatNum(eff)}x Points`
+      },
+      {
+        id: 1,
+        name: "B2: Circuit Overclock",
+        desc: "Boosts Points and strengthens B1.",
+        baseCost: D(250),
+        costScale: D(2.1),
+        getEffect: (lvl) => {
+          let base = D(3.5);
+          if (state.upgrades[4]) base = base.mul(2);
+          if (state.upgrades[10]) base = base.pow(3);
+          return base.pow(lvl);
+        },
+        formatEffect: (eff) => `${formatNum(eff)}x Points`
+      },
+      {
+        id: 2,
+        name: "B3: Neon Compressor",
+        desc: "Raises Point gain to a stronger exponent.",
+        baseCost: D(25000),
+        costScale: D(4.5),
+        getEffect: (lvl) => {
+          let perLvl = D(0.06);
+          if (state.upgrades[8]) perLvl = perLvl.mul(2.5);
+          if (state.upgrades[14]) perLvl = perLvl.mul(10);
+          return D(1).add(lvl.mul(perLvl));
+        },
+        formatEffect: (eff) => `^${formatNum(eff, 3)} Point Exp`
+      },
+      {
+        id: 3,
+        name: "B4: Inflation Reactor",
+        desc: "Multiplies Inflation Point gain & IP effect.",
+        baseCost: D(1e9),
+        costScale: D(15),
+        getEffect: (lvl) => {
+          let base = D(4);
+          if (state.upgrades[11]) base = base.pow(3);
+          return base.pow(lvl);
+        },
+        formatEffect: (eff) => `${formatNum(eff)}x Inflation`
+      },
+      {
+        id: 4,
+        name: "B5: Tetration Core",
+        desc: "Adds direct tetrational height (10^^+h) to Points!",
+        baseCost: D("1e50"),
+        costScale: D(1e6),
+        getEffect: (lvl) => {
+          if (lvl.lte(0)) return D(0);
+          let perLvl = D(0.08);
+          if (state.upgrades[16]) perLvl = perLvl.mul(5);
+          if (state.upgrades[18]) perLvl = perLvl.mul(100);
+          if (state.upgrades[19]) perLvl = perLvl.pow(2.5).mul(500);
+          return lvl.mul(perLvl);
+        },
+        formatEffect: (eff) => `+${formatNum(eff, 2)} Tetration Height`
+      }
+    ];
+
+    function getBuyableCost(id, lvl = state.buyables[id]) {
+      const b = BUYABLES_DATA[id];
+      let scale = b.costScale;
+      if (state.upgrades[5]) scale = scale.pow(0.85);
+      // Super-scaling softcap at very high levels
+      let effectiveLvl = lvl;
+      if (lvl.gt(1000)) {
+        effectiveLvl = D(1000).add(lvl.sub(1000).pow(1.25));
+      }
+      return b.baseCost.mul(scale.pow(effectiveLvl));
+    }
+
+    function buyBuyable(id) {
+      const cost = getBuyableCost(id);
+      if (state.points.gte(cost)) {
+        // Deduct points only if below e10000
+        if (state.points.lt("1e10000")) {
+          state.points = state.points.sub(cost);
+        }
+        state.buyables[id] = state.buyables[id].add(1);
+        renderAll();
+      }
+    }
+
+    function buyMaxBuyable(id) {
+      const b = BUYABLES_DATA[id];
+      let scale = b.costScale;
+      if (state.upgrades[5]) scale = scale.pow(0.85);
+
+      if (state.points.lt(getBuyableCost(id))) return;
+
+      // Analytical bulk buy for standard exponential scaling up to 1000
+      if (state.buyables[id].lt(1000)) {
+        const maxAfford = state.points.div(b.baseCost).log(scale).floor().add(1);
+        const target = Decimal.min(maxAfford, 1000);
+        if (target.gt(state.buyables[id])) {
+          const lastCost = getBuyableCost(id, target.sub(1));
+          if (state.points.lt("1e10000") && state.points.gte(lastCost)) {
+            state.points = state.points.sub(lastCost);
+          }
+          state.buyables[id] = target;
+        }
+      }
+
+      // Super-scaled bulk buy above level 1000
+      if (state.buyables[id].gte(1000) && state.points.gte(getBuyableCost(id))) {
+        // Invert effectiveLvl = 1000 + (lvl - 1000)^1.25
+        const totalEffLvl = state.points.div(b.baseCost).log(scale);
+        if (totalEffLvl.gt(1000)) {
+          const newLvl = D(1000).add(totalEffLvl.sub(1000).pow(1 / 1.25)).floor().add(1);
+          if (newLvl.gt(state.buyables[id])) {
+            state.buyables[id] = newLvl;
+          }
+        }
+      }
+    }
+
+    function buyMaxAllBuyables() {
+      for (let i = 0; i < 5; i++) {
+        buyMaxBuyable(i);
+      }
+      renderAll();
+    }
+
+    /*************************************************************************
+     * 20 UPGRADES DEFINITION (Smoothly bridges 0 -> 10^^10^10000)
+     *************************************************************************/
+    const UPGRADES_DATA = [
+      { id: 0,  name: "U1: First Spark",         cost: D(15),          desc: "Multiply Point gain by 5x." },
+      { id: 1,  name: "U2: Pixel Overdrive",     cost: D(120),         desc: "B1 base multiplier is 1.5x stronger." },
+      { id: 2,  name: "U3: Self-Synergy",        cost: D(1500),        desc: "Points boost themselves based on log10(Points)." },
+      { id: 3,  name: "U4: Creator Momentum",    cost: D(25000),       desc: "Each purchased Upgrade multiplies Points by 2.5x." },
+      { id: 4,  name: "U5: Dual Core Circuit",   cost: D(3e5),         desc: "Doubles B2 base multiplier and click power." },
+      { id: 5,  name: "U6: Inflation Prep",      cost: D(2.5e6),       desc: "Reduces all Buyable cost scaling by 15%." },
+      { id: 6,  name: "U7: Inflated Power",      cost: D(1e8),         desc: "Inflation Points boost Points with an extra ^1.5 exponent." },
+      { id: 7,  name: "U8: Neon Amplification",  cost: D(1e12),        desc: "Squares the base multiplier of B1: Pixel Spark." },
+      { id: 8,  name: "U9: Compressor Surge",    cost: D(1e18),        desc: "B3: Neon Compressor exponent effect is 2.5x stronger." },
+      { id: 9,  name: "U10: Passive Inflation",  cost: D(1e27),        desc: "Gain 100% of pending Inflation Points per second passively!" },
+      { id: 10, name: "U11: Hyper Circuitry",    cost: D(1e42),        desc: "Cubes the base multiplier of B2: Circuit Overclock." },
+      { id: 11, name: "U12: Reactor Resonance",  cost: D(1e65),        desc: "Cubes B4 base and unlocks Auto-Max Buyables." },
+      { id: 12, name: "U13: Exponential Loop",   cost: D("1e110"),     desc: "Raises total Point generation to ^1.25." },
+      { id: 13, name: "U14: Penta-Spark",        cost: D("1e220"),     desc: "Raises B1 base multiplier to the 5th power." },
+      { id: 14, name: "U15: Mega Compression",   cost: D("1e500"),     desc: "B3: Neon Compressor effect is 10x stronger." },
+      { id: 15, name: "U16: Inflation Singularity", cost: D("1e2500"), desc: "Inflation Points directly power-tetrate Point gain." },
+      { id: 16, name: "U17: Tetration Awakening",cost: D("1e15000"),   desc: "B5: Tetration Core is 5x stronger; unlocks hyper-growth." },
+      { id: 17, name: "U18: Cosmic Tower",       cost: D("ee6"),       desc: "Points continuously climb power towers (10^Points scaling)." },
+      { id: 18, name: "U19: Hyper-Tetration",    cost: D("10^^6"),     desc: "B5 is 100x stronger and tetrates Points every tick." },
+      { id: 19, name: "U20: Spotky2010 Ascendant",cost: D("10^^100"),   desc: "Unleashes exponential tetration height toward 10^^10^10000!" }
+    ];
+
+    function buyUpgrade(id) {
+      if (state.upgrades[id]) return;
+      const upg = UPGRADES_DATA[id];
+      if (state.points.gte(upg.cost)) {
+        if (state.points.lt("1e10000")) {
+          state.points = state.points.sub(upg.cost);
+        }
+        state.upgrades[id] = true;
+        if (id === 11) {
+          showToast("Auto-Max Buyables unlocked!");
+        } else {
+          showToast(`Purchased ${upg.name}!`);
+        }
+        renderAll();
+      }
+    }
+
+    function buyAllAffordableUpgrades() {
+      let boughtAny = false;
+      for (let i = 0; i < UPGRADES_DATA.length; i++) {
+        if (!state.upgrades[i] && state.points.gte(UPGRADES_DATA[i].cost)) {
+          if (state.points.lt("1e10000")) {
+            state.points = state.points.sub(UPGRADES_DATA[i].cost);
+          }
+          state.upgrades[i] = true;
+          boughtAny = true;
+        }
+      }
+      if (boughtAny) {
+        showToast("Purchased all affordable upgrades!");
+        renderAll();
+      }
+    }
+
+    /*************************************************************************
+     * INFLATION POINTS PRESTIGE & FORMULAS
+     *************************************************************************/
+    function getInflationPointGain() {
+      if (state.points.lt(INFLATION_REQ)) return D(0);
+      // Base formula: (Points / 1e6)^0.25, boosted by B4 and later upgrades
+      let base = state.points.div(INFLATION_REQ).pow(0.25);
+      const b4Eff = BUYABLES_DATA[3].getEffect(state.buyables[3]);
+      base = base.mul(b4Eff);
+
+      if (state.upgrades[15]) {
+        base = base.pow(2.5);
+      }
+      if (state.upgrades[17]) {
+        base = D(10).pow(base.log10().pow(1.35));
+      }
+      return base.floor();
+    }
+
+    function getInflationBoost() {
+      if (state.inflationPoints.lte(0)) return D(1);
+      let boost = state.inflationPoints.add(1).pow(2.2);
+      const b4Eff = BUYABLES_DATA[3].getEffect(state.buyables[3]);
+      boost = boost.mul(b4Eff.pow(0.5));
+      if (state.upgrades[6]) boost = boost.pow(1.5);
+      if (state.upgrades[15]) boost = boost.pow(4);
+      return boost;
+    }
+
+    function doInflationReset() {
+      const gain = getInflationPointGain();
+      if (gain.lt(1)) return;
+
+      state.inflationPoints = state.inflationPoints.add(gain);
+      state.inflationResets += 1;
+
+      // Reset Points & Buyables (Upgrades stay permanently!)
+      state.points = D(0);
+      state.buyables = [D(0), D(0), D(0), D(0), D(0)];
+
+      showToast(`Inflated for +${formatNum(gain)} Inflation Points!`);
+      renderAll();
+    }
+
+    /*************************************************************************
+     * POINT GENERATION & HYPER-GROWTH CALCULATION
+     *************************************************************************/
+    function getUpgradeMultiplier() {
+      let mult = D(1);
+      const boughtCount = state.upgrades.filter(Boolean).length;
+
+      if (state.upgrades[0]) mult = mult.mul(5);
+      if (state.upgrades[2] && state.points.gt(1)) {
+        mult = mult.mul(state.points.log10().add(1).pow(2));
+      }
+      if (state.upgrades[3] && boughtCount > 0) {
+        mult = mult.mul(D(2.5).pow(boughtCount));
+      }
+      return mult;
+    }
+
+    function getBuyableMultiplier() {
+      const b1 = BUYABLES_DATA[0].getEffect(state.buyables[0]);
+      const b2 = BUYABLES_DATA[1].getEffect(state.buyables[1]);
+      return b1.mul(b2);
+    }
+
+    function getPointExponent() {
+      let exp = BUYABLES_DATA[2].getEffect(state.buyables[2]);
+      if (state.upgrades[12]) exp = exp.mul(1.25);
+      return exp;
+    }
+
+    function getPointsPerSecond() {
+      // Base rate = 1/sec
+      let pps = D(1);
+      pps = pps.mul(getUpgradeMultiplier());
+      pps = pps.mul(getBuyableMultiplier());
+      pps = pps.mul(getInflationBoost());
+
+      const exp = getPointExponent();
+      if (exp.gt(1)) {
+        pps = pps.pow(exp);
+      }
+
+      // U16: Inflation Singularity power-tower boost
+      if (state.upgrades[15] && state.inflationPoints.gt(10)) {
+        const ipLog = state.inflationPoints.log10();
+        pps = pps.mul(D(10).pow(ipLog.pow(1.6)));
+      }
+
+      // U18: Cosmic Tower (10^Points scaling)
+      if (state.upgrades[17] && state.points.gt(10)) {
+        const pLog = state.points.log10();
+        pps = pps.max(D(10).pow(pLog.pow(1.18)));
+      }
+
+      // B5: Tetration Core (adds tetrational height 10^^height)
+      const tetrationHeight = BUYABLES_DATA[4].getEffect(state.buyables[4]);
+      if (tetrationHeight.gt(0)) {
+        const tetVal = D(10).tetrate(tetrationHeight);
+        pps = pps.max(tetVal);
+      }
+
+      return pps;
+    }
+
+    function getClickPower() {
+      let click = getPointsPerSecond().mul(0.5).max(1);
+      if (state.upgrades[4]) click = click.mul(2);
+      return click;
+    }
+
+    function clickGenerate() {
+      const gain = getClickPower();
+      state.points = state.points.add(gain);
+      state.totalPoints = state.totalPoints.add(gain);
+      checkEndgame();
+      updateUI();
+    }
+
+    /*************************************************************************
+     * MAIN GAME TICK LOOP (30 FPS)
+     *************************************************************************/
+    function gameTick() {
+      const now = Date.now();
+      const dt = Math.min((now - state.lastTick) / 1000, 1.0); // cap dt for stability
+      state.lastTick = now;
+      state.playTime += dt;
+
+      // Auto-Buyables if U12 purchased and enabled
+      if (state.upgrades[11] && state.autoBuyables) {
+        buyMaxAllBuyables();
+      }
+
+      // Passive Inflation Points if U10 purchased
+      if (state.upgrades[9]) {
+        const ipGain = getInflationPointGain();
+        if (ipGain.gt(0)) {
+          state.inflationPoints = state.inflationPoints.add(ipGain.mul(dt));
+        }
+      }
+
+      // Standard + Hyper-exponential Point Generation
+      const pps = getPointsPerSecond();
+      state.points = state.points.add(pps.mul(dt));
+
+      // U19 & U20: Direct Tetrational Height Climbing toward 10^^10^10000
+      if (state.upgrades[18] && state.points.gte(10)) {
+        let currentSlog = state.points.slog(10);
+        // Base tetrational climb rate per second
+        let slogGainRate = D(1.8);
+        const b5Lvl = state.buyables[4].add(1);
+        slogGainRate = slogGainRate.mul(b5Lvl.log10().add(1));
+
+        if (state.upgrades[19]) {
+          // Exponentially accelerates slog(Points) so 10^^100 climbs smoothly to 10^^10^10000!
+          const exponentBoost = currentSlog.max(10).pow(1.42);
+          slogGainRate = slogGainRate.mul(exponentBoost);
+        }
+
+        const nextSlog = currentSlog.add(slogGainRate.mul(dt));
+        state.points = D(10).tetrate(nextSlog);
+      }
+
+      if (state.points.gt(state.totalPoints)) {
+        state.totalPoints = state.points;
+      }
+
+      checkEndgame();
+      updateUI();
+    }
+
+    function checkEndgame() {
+      if (!state.endgameReached && state.points.gte(ENDGAME_POINTS)) {
+        state.endgameReached = true;
+        document.getElementById("endgame-time").textContent = formatDuration(state.playTime);
+        document.getElementById("endgame-inflations").textContent = state.inflationResets.toLocaleString("en-US");
+        const modal = document.getElementById("endgame-modal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closeEndgameModal() {
+      const modal = document.getElementById("endgame-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function formatDuration(sec) {
+      const s = Math.floor(sec);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const rem = s % 60;
+      if (h > 0) return `${h}h ${m}m ${rem}s`;
+      if (m > 0) return `${m}m ${rem}s`;
+      return `${rem}s`;
+    }
+
+    /*************************************************************************
+     * UI RENDERING & UPDATES
+     *************************************************************************/
+    function renderBuyables() {
+      const grid = document.getElementById("buyables-grid");
+      grid.innerHTML = "";
+      BUYABLES_DATA.forEach((b) => {
+        const card = document.createElement("div");
+        card.id = `buyable-card-${b.id}`;
+        card.className = "buyable-card rounded-2xl p-4 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <span class="text-xs font-extrabold text-cyan-300">${b.name}</span>
+              <span id="buyable-lvl-${b.id}" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-900 text-purple-300 border border-purple-500/30">Lv 0</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-snug mb-2.5">${b.desc}</p>
+            <div class="bg-slate-950/80 rounded-xl p-2 border border-slate-800 mb-3">
+              <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Effect</div>
+              <div id="buyable-eff-${b.id}" class="text-xs font-extrabold text-white truncate">1.00x</div>
+            </div>
+          </div>
+          <div class="flex gap-1.5">
+            <button id="buyable-btn-${b.id}" onclick="buyBuyable(${b.id})" class="btn-spotky flex-1 py-2 px-2 rounded-xl text-[11px] font-extrabold text-white cursor-pointer truncate">
+              Cost: 10
+            </button>
+            <button onclick="buyMaxBuyable(${b.id})" class="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-cyan-400/30 text-cyan-200 text-[11px] font-extrabold cursor-pointer transition">
+              Max
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderUpgrades() {
+      const grid = document.getElementById("upgrades-grid");
+      grid.innerHTML = "";
+      UPGRADES_DATA.forEach((u) => {
+        const card = document.createElement("div");
+        card.id = `upg-card-${u.id}`;
+        card.onclick = () => buyUpgrade(u.id);
+        card.className = "upg-card rounded-2xl p-3.5 flex flex-col justify-between select-none";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-1 mb-1">
+              <span class="text-xs font-extrabold text-white leading-tight">${u.name}</span>
+              <span id="upg-status-${u.id}" class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">#${u.id + 1}</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-snug mb-3">${u.desc}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-700/50 flex items-center justify-between text-[11px] font-extrabold">
+            <span class="text-slate-400">Cost:</span>
+            <span id="upg-cost-${u.id}" class="text-cyan-300">${formatNum(u.cost)}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updateUI() {
+      // Primary Points & Rates
+      document.getElementById("points-display").textContent = formatNum(state.points, 2);
+      document.getElementById("pps-display").textContent = formatNum(getPointsPerSecond(), 2);
+      document.getElementById("click-gain-display").textContent = formatNum(getClickPower(), 2);
+
+      // Multipliers Summary
+      document.getElementById("stat-upg-mult").textContent = `${formatNum(getUpgradeMultiplier())}x`;
+      document.getElementById("stat-buy-mult").textContent = `${formatNum(getBuyableMultiplier())}x`;
+      const tetH = BUYABLES_DATA[4].getEffect(state.buyables[4]);
+      document.getElementById("stat-hyper-mult").textContent = tetH.gt(0)
+        ? `10^^+${formatNum(tetH, 2)}`
+        : `^${formatNum(getPointExponent(), 2)}`;
+
+      // Hyper-tier badge
+      const tierBadge = document.getElementById("hyper-tier-badge");
+      if (state.points.gte("10^^10")) {
+        tierBadge.textContent = "Tier 4: Tetrational Ascension";
+      } else if (state.points.gte("ee6")) {
+        tierBadge.textContent = "Tier 3: Power Tower Scaling";
+      } else if (state.points.gte("1e100")) {
+        tierBadge.textContent = "Tier 2: Hyper-Exponential";
+      } else {
+        tierBadge.textContent = "Tier 1: Linear & Exponential";
+      }
+
+      // Endgame Progress Bar (Logarithmic/Slog scale up to 10^^10^10000)
+      let progressPct = 0;
+      if (state.points.gte(ENDGAME_POINTS)) {
+        progressPct = 100;
+      } else if (state.points.gt(1)) {
+        const curSlog = state.points.slog(10);
+        if (curSlog.lte(10)) {
+          // Smooth early bar up to 50% at 10^^10
+          progressPct = Math.max(0, (curSlog.toNumber() / 10) * 50);
+        } else {
+          // 50% to 100% mapped logarithmically from slog 10 to slog 10^10000 (log10(slog) from 1 to 10000)
+          const logSlog = curSlog.log10().toNumber();
+          progressPct = 50 + Math.min(50, ((logSlog - 1) / 9999) * 50);
+        }
+      }
+      document.getElementById("endgame-percent").textContent = `${progressPct.toFixed(4)}%`;
+      document.getElementById("endgame-bar").style.width = `${Math.min(100, progressPct)}%`;
+
+      // Inflation Points UI
+      document.getElementById("ip-display").textContent = formatNum(state.inflationPoints, 2);
+      document.getElementById("ip-boost-display").textContent = `${formatNum(getInflationBoost())}x`;
+
+      const passiveTag = document.getElementById("ip-passive-tag");
+      if (state.upgrades[9]) passiveTag.classList.remove("hidden");
+      else passiveTag.classList.add("hidden");
+
+      const pendingIP = getInflationPointGain();
+      const inflateBtn = document.getElementById("inflate-btn");
+      if (pendingIP.gte(1)) {
+        inflateBtn.disabled = false;
+        inflateBtn.textContent = `Inflate for +${formatNum(pendingIP)} Inflation Points`;
+        document.getElementById("next-ip-req").textContent = "Ready Now!";
+      } else {
+        inflateBtn.disabled = true;
+        inflateBtn.textContent = `Reach 1.00e6 Points to Inflate`;
+        document.getElementById("next-ip-req").textContent = "1.00e6 Points";
+      }
+
+      // Auto-Buyables button visibility
+      const autoBtn = document.getElementById("autobuy-btn");
+      if (state.upgrades[11]) {
+        autoBtn.classList.remove("hidden");
+        autoBtn.textContent = `Auto-Buyables: ${state.autoBuyables ? "ON" : "OFF"}`;
+      } else {
+        autoBtn.classList.add("hidden");
+      }
+
+      // Update Buyables
+      for (let i = 0; i < 5; i++) {
+        const b = BUYABLES_DATA[i];
+        const lvl = state.buyables[i];
+        const cost = getBuyableCost(i, lvl);
+        const eff = b.getEffect(lvl);
+        document.getElementById(`buyable-lvl-${i}`).textContent = `Lv ${formatNum(lvl, 0)}`;
+        document.getElementById(`buyable-eff-${i}`).textContent = b.formatEffect(eff);
+        const btn = document.getElementById(`buyable-btn-${i}`);
+        btn.textContent = `Cost: ${formatNum(cost)}`;
+        btn.disabled = state.points.lt(cost);
+      }
+
+      // Update Upgrades
+      const boughtCount = state.upgrades.filter(Boolean).length;
+      document.getElementById("upgrades-count-badge").textContent = `${boughtCount} / 20 Purchased`;
+
+      for (let i = 0; i < 20; i++) {
+        const u = UPGRADES_DATA[i];
+        const card = document.getElementById(`upg-card-${i}`);
+        const statusEl = document.getElementById(`upg-status-${i}`);
+        const costEl = document.getElementById(`upg-cost-${i}`);
+
+        card.classList.remove("bought", "affordable", "locked");
+        if (state.upgrades[i]) {
+          card.classList.add("bought");
+          statusEl.textContent = "OWNED";
+          statusEl.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-fuchsia-500/30 text-fuchsia-200";
+          costEl.textContent = "Purchased";
+          costEl.className = "text-fuchsia-300";
+        } else if (state.points.gte(u.cost)) {
+          card.classList.add("affordable");
+          statusEl.textContent = "BUY";
+          statusEl.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-cyan-500/30 text-cyan-200";
+          costEl.textContent = formatNum(u.cost);
+          costEl.className = "text-cyan-300";
+        } else {
+          card.classList.add("locked");
+          statusEl.textContent = `#${i + 1}`;
+          statusEl.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400";
+          costEl.textContent = formatNum(u.cost);
+          costEl.className = "text-slate-400";
+        }
+      }
+    }
+
+    function renderAll() {
+      renderBuyables();
+      renderUpgrades();
+      updateUI();
+    }
+
+    function toggleAutoBuy() {
+      state.autoBuyables = !state.autoBuyables;
+      updateUI();
+    }
+
+    /*************************************************************************
+     * SAVE / LOAD / EXPORT / IMPORT / HARD RESET
+     *************************************************************************/
+    const SAVE_KEY = "spotky2010_incremental_save_v1";
+
+    function serializeSave() {
+      const payload = {
+        points: state.points.toString(),
+        totalPoints: state.totalPoints.toString(),
+        inflationPoints: state.inflationPoints.toString(),
+        inflationResets: state.inflationResets,
+        upgrades: state.upgrades,
+        buyables: state.buyables.map((b) => b.toString()),
+        autoBuyables: state.autoBuyables,
+        endgameReached: state.endgameReached,
+        playTime: state.playTime
+      };
+      return btoa(JSON.stringify(payload));
+    }
+
+    function deserializeSave(str) {
+      try {
+        const json = JSON.parse(atob(str.trim()));
+        state.points = D(json.points || 0);
+        state.totalPoints = D(json.totalPoints || 0);
+        state.inflationPoints = D(json.inflationPoints || 0);
+        state.inflationResets = Number(json.inflationResets || 0);
+        state.upgrades = Array.isArray(json.upgrades) && json.upgrades.length === 20
+          ? json.upgrades.map(Boolean)
+          : Array(20).fill(false);
+        state.buyables = Array.isArray(json.buyables) && json.buyables.length === 5
+          ? json.buyables.map((b) => D(b))
+          : [D(0), D(0), D(0), D(0), D(0)];
+        state.autoBuyables = json.autoBuyables !== undefined ? Boolean(json.autoBuyables) : true;
+        state.endgameReached = Boolean(json.endgameReached);
+        state.playTime = Number(json.playTime || 0);
+        state.lastTick = Date.now();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function manualSave(silent = false) {
+      try {
+        localStorage.setItem(SAVE_KEY, serializeSave());
+        if (!silent) showToast("Game Saved!");
+      } catch (e) {
+        if (!silent) showToast("Unable to access local storage.");
+      }
+    }
+
+    function loadSave() {
+      try {
+        const saved = localStorage.getItem(SAVE_KEY);
+        if (saved) {
+          deserializeSave(saved);
+        }
+      } catch (e) {
+        console.warn("Save load skipped:", e);
+      }
+    }
+
+    function openSaveModal() {
+      document.getElementById("save-textarea").value = serializeSave();
+      const modal = document.getElementById("save-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeSaveModal() {
+      const modal = document.getElementById("save-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function copyExportSave() {
+      const textarea = document.getElementById("save-textarea");
+      textarea.select();
+      document.execCommand("copy");
+      showToast("Save string copied to clipboard!");
+    }
+
+    function importSaveFromModal() {
+      const val = document.getElementById("save-textarea").value;
+      if (deserializeSave(val)) {
+        manualSave(true);
+        renderAll();
+        closeSaveModal();
+        showToast("Save imported successfully!");
+      } else {
+        showToast("Invalid save string!");
+      }
+    }
+
+    function promptHardReset() {
+      closeEndgameModal();
+      const modal = document.getElementById("reset-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeResetModal() {
+      const modal = document.getElementById("reset-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function executeHardReset() {
+      state = {
+        points: D(0),
+        totalPoints: D(0),
+        inflationPoints: D(0),
+        inflationResets: 0,
+        upgrades: Array(20).fill(false),
+        buyables: [D(0), D(0), D(0), D(0), D(0)],
+        autoBuyables: true,
+        endgameReached: false,
+        playTime: 0,
+        lastTick: Date.now()
+      };
+      manualSave(true);
+      closeResetModal();
+      renderAll();
+      showToast("Game has been hard reset.");
+    }
+
+    /*************************************************************************
+     * TOAST NOTIFICATIONS & KEYBOARD SHORTCUTS
+     *************************************************************************/
+    function showToast(msg) {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = "px-4 py-2.5 rounded-xl bg-slate-900/95 border border-cyan-400/60 text-cyan-200 text-xs font-bold shadow-lg transition-opacity duration-300";
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), 300);
+      }, 2400);
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT") return;
+      if (e.key.toLowerCase() === "m") buyMaxAllBuyables();
+      if (e.key.toLowerCase() === "u") buyAllAffordableUpgrades();
+      if (e.key.toLowerCase() === "i") doInflationReset();
+    });
+
+    /*************************************************************************
+     * INITIALIZATION
+     *************************************************************************/
+    window.onload = function () {
+      loadSave();
+      renderAll();
+      setInterval(gameTick, 33); // ~30 FPS loop
+      setInterval(() => manualSave(true), 15000); // Auto-save every 15s
+    };
+  </script>
+</body>
+</html>
